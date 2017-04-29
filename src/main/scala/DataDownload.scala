@@ -52,7 +52,7 @@ object DataDownload {
     content
   }
 
-  def yahoolib(): Unit ={
+  def yahoolib(): Unit = {
     val stock = YahooFinance.get("INTC")
     println(stock.print())
   }
