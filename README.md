@@ -1,5 +1,9 @@
 # Crystal Ball
 
+database end point:
+
+dev.cfzlkjcjtww0.us-west-2.rds.amazonaws.com
+
 ## Purpose1: 
 
 Build a versatile application to both back test and forward test stock market strategies. The application should be able to take in algorithms based on set parameters (the strategy) and provide measurable results. The main output string together and compare the results.
