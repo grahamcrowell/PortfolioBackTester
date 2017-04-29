@@ -10,4 +10,4 @@ libraryDependencies ++= Seq(
   "org.slf4j" % "slf4j-nop" % "1.6.4",
   "com.typesafe.slick" %% "slick-hikaricp" % "3.2.0"
 )
-
+libraryDependencies += "org.scalaj" %% "scalaj-http" % "2.3.0"
