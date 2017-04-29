@@ -11,8 +11,10 @@ object Foo {
   val suppliers = TableQuery[Suppliers]
   val coffees = TableQuery[Coffees]
   val setup = DBIO.seq(
-    // Create the tables, including primary and foreign keys
     (suppliers.schema ++ coffees.schema).create,
+
+
+
 
     // Insert some suppliers
     suppliers += (101, "Acme, Inc.", "99 Market Street", "Groundsville", "CA", "95199"),
@@ -76,8 +78,10 @@ object Main {
   def main(args: Array[String]): Unit = {
     println("start")
 
+    println("connecting to h2mem1 (built in db for dev) using TypeSafe configuration file: application.conf")
     val db = Database.forConfig("h2mem1")
     try {
+      println("Create the tables, including primary and foreign keys")
       val foo = Foo
       val setupFuture = db.run(foo.setup)
     } finally db.close
