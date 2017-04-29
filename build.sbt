@@ -11,4 +11,6 @@ libraryDependencies ++= Seq(
   "com.typesafe.slick" %% "slick-hikaricp" % "3.2.0"
 )
 libraryDependencies += "org.scalaj" %% "scalaj-http" % "2.3.0"
+
+//see: http://financequotes-api.com/
 libraryDependencies += "com.yahoofinance-api" % "YahooFinanceAPI" % "3.6.1"
