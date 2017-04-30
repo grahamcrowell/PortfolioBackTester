@@ -71,7 +71,7 @@ object DataDownload {
     println(dailyData)
     println(dailyData.get(0))
     val dailyPriceData = dailyData.get(0)
-    val open = dailyPriceData.open()
+    val open = dailyPriceData.getOpen()
     println(open)
 
 
