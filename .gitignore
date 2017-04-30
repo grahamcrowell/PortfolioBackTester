@@ -238,7 +238,7 @@ csx
 AppPackages/
 
 # Others
-sql/
+# sql/ commented by graham
 *.Cache
 ClientBin/
 [Ss]tyle[Cc]op.*
