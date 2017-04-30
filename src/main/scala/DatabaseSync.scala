@@ -3,9 +3,11 @@ import slick.jdbc.PostgresProfile.api._
 object TestSlickStock {
   val stock = TableQuery[Stock]
   val stockohlc = TableQuery[StockOHLC]
+  // create table(S)
+  val setup = DBIO.seq(stock.schema.create)
 
   // Definition of the STOCK table
-  class Stock(tag: Tag) extends Table[(String, String, String, String, Int)](tag, "STOCK") {
+  class Stock(tag: Tag) extends Table[(String, String, String, String, Int)](tag, Some("staging"), "STOCK") {
     // Every table needs a * projection with the same type as the table's type parameter
     def * = (symbol, name, currency, exchange, nasdaq_id)
 

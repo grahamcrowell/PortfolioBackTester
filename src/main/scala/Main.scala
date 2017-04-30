@@ -7,7 +7,19 @@ import slick.jdbc.PostgresProfile.api._
 
 
 object Tests {
-  def SlickAws(): Unit = {
+
+  def SlickFinDwAws(): Unit = {
+    println("connecting to aws (over internet) using TypeSafe configuration file: application.conf")
+    val db = Database.forConfig("aws")
+    try {
+      println("Create the stock table")
+      val foo = TestSlickStock
+      val setupFuture = db.run(foo.setup)
+    } finally db.close
+  }
+
+
+  def SlickExampleAws(): Unit = {
 
 
     println("connecting to aws (over internet) using TypeSafe configuration file: application.conf")
@@ -15,7 +27,7 @@ object Tests {
     try {
       println("Create the tables, including primary and foreign keys")
       val foo = TestSlickExmaple
-//      val setupFuture = db.run(foo.setup)
+      //      val setupFuture = db.run(foo.setup)
     } finally db.close
 
     println("tables created in postgreSql instance running on AWS")
@@ -29,6 +41,7 @@ object Tests {
 
   }
 
+
   def YahooLib(): Unit = {
     val data = DataDownload.yahoolib()
   }
@@ -39,7 +52,8 @@ object Main {
   def test(): Unit = {
     //    Tests.SlickAws()
     //    Tests.HttpDownload()
-    Tests.YahooLib()
+//    Tests.YahooLib()
+    Tests.SlickFinDwAws()
   }
 
   def main(args: Array[String]): Unit = {
