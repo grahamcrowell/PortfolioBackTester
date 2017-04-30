@@ -1,8 +1,5 @@
-USE FinDW
-GO
-SET NOCOUNT ON;
+\connect findw
 
-BEGIN
 
 TRUNCATE TABLE dim.Stock;
 INSERT INTO dim.Stock (Symbol, StockName, CID) VALUES ('','Invalid',NULL);

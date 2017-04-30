@@ -2,7 +2,7 @@ import slick.jdbc.PostgresProfile.api._
 
 object TestSlickStock {
   val stock = TableQuery[Stock]
-  val coffees = TableQuery[StockOHLC]
+  val stockohlc = TableQuery[StockOHLC]
 
   // Definition of the STOCK table
   class Stock(tag: Tag) extends Table[(String, String, String, String, Int)](tag, "STOCK") {
