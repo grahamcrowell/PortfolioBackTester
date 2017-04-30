@@ -1,3 +1,5 @@
+import java.util.Calendar
+
 import yahoofinance.YahooFinance
 
 /**
@@ -55,6 +57,11 @@ object DataDownload {
   def yahoolib(): Unit = {
     val stock = YahooFinance.get("INTC")
     println(stock.print())
+    var calendar = Calendar.getInstance()
+    calendar.set(1900, 1, 1)
+    val data = stock.getHistory(calendar)
+    println(data)
+
   }
 
 }

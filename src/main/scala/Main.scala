@@ -15,7 +15,7 @@ object Tests {
     try {
       println("Create the tables, including primary and foreign keys")
       val foo = TestSlickExmaple
-      val setupFuture = db.run(foo.setup)
+//      val setupFuture = db.run(foo.setup)
     } finally db.close
 
     println("tables created in postgreSql instance running on AWS")
