@@ -23,7 +23,7 @@ object Tests {
 
 
     println("connecting to aws (over internet) using TypeSafe configuration file: application.conf")
-    val db = Database.forConfig("aws")
+    val db = Database.forConfig("local")
     try {
       println("Create the tables, including primary and foreign keys")
       val foo = TestSlickExmaple
@@ -34,12 +34,6 @@ object Tests {
     println("see <database>.<schema>: findw.public")
   }
 
-  def HttpDownload(): Unit = {
-    val url = "http://chart.finance.yahoo.com/table.csv?s=AMZN&a=2&b=28&c=2017&d=3&e=28&f=2017&g=d&ignore=.csv"
-    val content = DataDownload.get(url)
-    println(content.value)
-
-  }
 
 
   def YahooLib(): Unit = {

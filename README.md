@@ -1,7 +1,7 @@
 # Crystal Ball
 
-database end point: dev.cfzlkjcjtww0.us-west-2.rds.amazonaws.com
-psql --host=dev.cfzlkjcjtww0.us-west-2.rds.amazonaws.com --port=5432 --username=root --password --dbname=findw
+- database end point: dev.cfzlkjcjtww0.us-west-2.rds.amazonaws.com
+- psql --host=dev.cfzlkjcjtww0.us-west-2.rds.amazonaws.com --port=5432 --username=root --password --dbname=findw
 
 ## Purpose1: 
 

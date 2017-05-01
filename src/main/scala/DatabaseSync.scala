@@ -3,41 +3,47 @@ import slick.jdbc.PostgresProfile.api._
 object TestSlickStock {
   val stock = TableQuery[Stock]
   val stockohlc = TableQuery[StockOHLC]
+//  val schema = stock.schema ++ stockohlc.schema
+  val schema = stockohlc.schema
   // create table(S)
-  val setup = DBIO.seq(stock.schema.create)
+  val setup = DBIO.seq(schema.create)
 
-  // Definition of the STOCK table
-  class Stock(tag: Tag) extends Table[(String, String, String, String, Int)](tag, Some("staging"), "STOCK") {
+  // Definition of the stock table (always use lowercase and _)
+  class Stock(tag: Tag) extends Table[(String, String, Option[String], Option[String], Option[Int])](tag, Some("dim"), "stock") {
     // Every table needs a * projection with the same type as the table's type parameter
     def * = (symbol, name, currency, exchange, nasdaq_id)
 
-    def symbol = column[String]("SYMBOL", O.PrimaryKey) // This is the primary key column
+    def symbol = column[String]("symbol", O.PrimaryKey) // This is the primary key column
 
-    def name = column[String]("COMPANY_NAME") // follows any standard?
+    def name = column[String]("company_name") // follows any standard?
 
-    def currency = column[String]("USD") // ISO standard?
+    // Option specifies NULLABLE
+    def currency = column[Option[String]]("usd") // ISO standard?
 
-    def exchange = column[String]("STOCK_EXCHANGE") // and standard?
+    // Option specifies NULLABLE
+    def exchange = column[Option[String]]("stock_exchange") // and standard?
 
-    def nasdaq_id = column[Int]("NASDAQ_ID") // used to get financial statement data (eg http://fundamentals.nasdaq.com/nasdaq_fundamentals.asp?CompanyID=8244&NumPeriods=50&Duration=1&documentType=1)
+    def nasdaq_id = column[Option[Int]]("nasdaq_id") // used to get financial statement data (eg http://fundamentals.nasdaq.com/nasdaq_fundamentals.asp?CompanyID=8244&NumPeriods=50&Duration=1&documentType=1)
   }
 
-  // Definition of the COFFEES table
-  class StockOHLC(tag: Tag) extends Table[(String, String, Double, Int, Int)](tag, "Stock_OHLC") {
-    def * = (name, supID, price, sales, total)
+  // Definition of the stock_ohlc table
+  class StockOHLC(tag: Tag) extends Table[(String, Int, Double, Double, Double, Double, Int, Double)](tag, Some("fact"), "stock_ohlc") {
+    def * = (stock_symbol, date_id, open, high, low, close, volume, adjusted_close)
 
-    def name = column[String]("COF_NAME", O.PrimaryKey)
-
-    def price = column[Double]("PRICE")
-
-    def sales = column[Int]("SALES")
-
-    def total = column[Int]("TOTAL")
-
+    def stock_symbol = column[String]("stock_symbol")
+    def date_id = column[Int]("date_id")
     // A reified foreign key relation that can be navigated to create a join
-    def supplier = foreignKey("SUP_FK", supID, stock)(_.symbol)
+//    def stock = foreignKey("asdf", stock_symbol, stock)(_.symbol)
 
-    def supID = column[String]("SUP_ID")
+    def open = column[Double]("open")
+    def high = column[Double]("high")
+    def low = column[Double]("low")
+    def close = column[Double]("close")
+    def volume = column[Int]("volume")
+    def adjusted_close = column[Double]("adjusted_close")
+
+    def pk = primaryKey("pk_stockohlc", (stock_symbol, date_id))
+
   }
 
 }
