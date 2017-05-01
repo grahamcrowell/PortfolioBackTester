@@ -13,7 +13,7 @@ object Tests {
     val db = Database.forConfig("aws")
     try {
       println("Create the stock table")
-      val foo = TestSlickStock
+      val foo = FinDwSchema
       val setupFuture = db.run(foo.setup)
     } finally db.close
   }
@@ -35,10 +35,14 @@ object Tests {
   }
 
 
-
   def YahooLib(): Unit = {
     val data = DataDownload.yahoolib()
   }
+//
+//  def UpdateData(): Unit = {
+//    val data = PriceIO.uploadPriceData("MSFT")
+//
+//  }
 }
 
 object Main {
@@ -46,8 +50,9 @@ object Main {
   def test(): Unit = {
     //    Tests.SlickAws()
     //    Tests.HttpDownload()
-//    Tests.YahooLib()
+    //    Tests.YahooLib()
     Tests.SlickFinDwAws()
+//    Tests.UpdateData()
   }
 
   def main(args: Array[String]): Unit = {
