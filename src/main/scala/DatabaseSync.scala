@@ -8,9 +8,16 @@ object FinDwSchema {
   //  var schema = stock.schema ++ stockohlc.schema
   //  val schema = stockohlc.schema
   // create table(s)
-  //  val priceData = new PriceIO("MSFT")
-  //  val values = priceData.uploadPriceData()
   val setup = DBIO.seq((stock.schema ++ stockohlc.schema).create)
+
+  def uploadData(symbol: String): DBIOAction[Unit, NoStream, Effect.Write] = {
+    val priceDownloader = new PriceIO(symbol)
+    val priceData = priceDownloader.getData()
+    val upload = DBIO.seq(
+      stockohlc ++= priceData
+    )
+    upload
+  }
 
   // Definition of the stock table (always use lowercase and _)
   class Stock(tag: Tag) extends Table[(String, String, Option[String], Option[String], Option[Int])](tag, Some("dim"), "stock") {

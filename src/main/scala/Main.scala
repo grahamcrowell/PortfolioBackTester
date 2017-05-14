@@ -39,6 +39,18 @@ object Tests {
     println("see <database>.<schema>: findw.public")
   }
 
+  def UploadPriceData(symbol: String): Unit = {
+    println("connecting to local postgres using TypeSafe configuration file: application.conf")
+    val db = Database.forConfig("local")
+    try {
+      println(s"upload price data for $symbol")
+      val setupFuture = db.run(FinDwSchema.uploadData(symbol))
+    } finally db.close
+
+    println("tables created in postgreSql instance running locally")
+    println("see <database>.<schema>: findw.public")
+  }
+
 
   def YahooLib(): Unit = {
     val data = DataDownload.yahoolib()
@@ -87,8 +99,9 @@ object Main {
     //    Tests.UpdateData()
     //    val x = Tests.QueryDb
     //    val y = Tests.WaitForQuery
-    //    Tests.SlickFinDwLocal()
+    Tests.SlickFinDwLocal
     //    Tests.SlickFinDwAws()
+    Tests.UploadPriceData("INTC")
   }
 
   def main(args: Array[String]): Unit = {

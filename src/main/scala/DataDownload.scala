@@ -57,10 +57,10 @@ object PriceIO {
 class PriceIO(symbol: String = "INTC") {
 
 
-  def uploadPriceData(): Seq[Tuple8[String, Int, Double, Double, Double, Double, Int, Double]] = {
+  def getData(): Seq[Tuple8[String, Int, Double, Double, Double, Double, Int, Double]] = {
     val stock = YahooFinance.get(symbol)
     println(stock.print)
-    //    TODO: function that checks if symbol exists in database
+//        TODO: function that checks if symbol exists in database
 
     var start = Calendar.getInstance()
     start.set(1900, 1, 1)
@@ -72,7 +72,7 @@ class PriceIO(symbol: String = "INTC") {
     println(interval)
     val java_list_HistoricalQuote = stock.getHistory(start, interval)
     //    List<HistoricalQuote> (Java)
-    println(java_list_HistoricalQuote)
+//    println(java_list_HistoricalQuote)
     val vector_HistoricalQuote = java_list_HistoricalQuote.asScala
 //      [Tuple8[String, Int, Double, Double, Double, Double, Int, Double]
     //    (java_list_HistoricalQuote.iterator())
