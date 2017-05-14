@@ -3,6 +3,8 @@
   */
 
 //import slick.jdbc.H2Profile.api._
+import java.util.{Timer, TimerTask}
+
 import FinDwSchema.Stock
 import slick.jdbc.PostgresProfile.api._
 
@@ -23,10 +25,7 @@ object Tests {
     } finally db.close
   }
 
-
   def SlickExampleAws(): Unit = {
-
-
     println("connecting to aws (over internet) using TypeSafe configuration file: application.conf")
     val db = Database.forConfig("local")
     try {
@@ -39,14 +38,13 @@ object Tests {
     println("see <database>.<schema>: findw.public")
   }
 
-
   def YahooLib(): Unit = {
     val data = DataDownload.yahoolib()
   }
 
-
   //  http://queirozf.com/entries/slick-3-reference-and-examples
   def QueryDb: Unit = {
+
     val db = Database.forConfig("aws")
     val stock = TableQuery[Stock]
 
@@ -54,6 +52,27 @@ object Tests {
       db.run(stock.map(_.name).result).map { res =>
         println(res)
       }, Duration.Inf)
+
+
+  }
+
+  def WaitForQuery: Unit = {
+    // database config
+    val db = Database.forConfig("aws")
+    // declare a query against Stock table
+    val stock = TableQuery[Stock]
+    // initiate/begin the query
+    // runit is an instance of "Future"
+    val runit = db.run(stock.map(_.name).result).map { res =>
+      println(res)
+    }
+
+    // check if query has finished executing
+    while (!runit.isCompleted) {
+      // if query not complete then wait for 1000 ms and check again
+      println("waiting for query")
+      Thread.sleep(1000L)
+    }
   }
 }
 
@@ -63,16 +82,22 @@ object Main {
     //    Tests.SlickAws()
     //    Tests.HttpDownload()
     //    Tests.YahooLib()
-    val x = Tests.QueryDb
+    //    val x = Tests.QueryDb
+    val y = Tests.WaitForQuery
 
     //    Tests.UpdateData()
   }
 
   def main(args: Array[String]): Unit = {
-    println(s"start")
+    println(s"program starting")
+    val start = System.currentTimeMillis()
     println(s"current working directory: ${System.getProperty("user.dir")}")
+
     test()
-    println("end")
+
+    val end = System.currentTimeMillis()
+
+    println(s"execution complete ${end - start} ms")
   }
 
 }
