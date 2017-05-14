@@ -88,7 +88,47 @@ object Tests {
       Thread.sleep(1000L)
     }
   }
+
+  def UpdateAllStockPriceData: Unit = {
+
+    // database config
+    val db = Database.forConfig("aws")
+    // declare a query against Stock table
+    val stock = TableQuery[Stock]
+
+    def update_symbols(symbols: Seq[String]) {
+      println("update symbol prices")
+      println(symbols)
+      try {
+        symbols.filter(! _.isEmpty()).foreach(symbol => {
+          println(s"upload price data for $symbol")
+          val updatePriceFuture = db.run(FinDwSchema.uploadData(symbol))
+          while(!updatePriceFuture.isCompleted)
+            {
+              println("waiting updatePriceFuture execution to complete")
+              Thread.sleep(1000L)
+            }
+        })
+      } finally db.close()
+    }
+
+    // initiate/begin the query
+    // runit is an instance of "Future"
+    val runit = db.run(stock.map(_.symbol).result).map { symbols =>
+      update_symbols(symbols)
+    }
+
+
+
+    // check if query has finished executing
+    while (!runit.isCompleted) {
+      // if query not complete then wait for 1000 ms and check again
+      println("waiting query execution to complete")
+      Thread.sleep(1000L)
+    }
+  }
 }
+
 
 object Main {
 
@@ -99,9 +139,10 @@ object Main {
     //    Tests.UpdateData()
     //    val x = Tests.QueryDb
     //    val y = Tests.WaitForQuery
-    Tests.SlickFinDwLocal
+    //    Tests.SlickFinDwLocal
     //    Tests.SlickFinDwAws()
-    Tests.UploadPriceData("INTC")
+    //    Tests.UploadPriceData("INTC")
+    Tests.UpdateAllStockPriceData
   }
 
   def main(args: Array[String]): Unit = {
