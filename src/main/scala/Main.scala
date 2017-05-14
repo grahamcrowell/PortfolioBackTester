@@ -25,18 +25,44 @@ object Tests {
     } finally db.close
   }
 
-  def SlickExampleAws(): Unit = {
-    println("connecting to aws (over internet) using TypeSafe configuration file: application.conf")
+  def SlickFinDwCloud(): Unit = {
+    println("connecting to local postgres using TypeSafe configuration file: application.conf")
+    val db = Database.forConfig("aws")
+    try {
+      println("Create the tables, including primary and foreign keys")
+      val setupFuture = db.run(FinDwSchema.setup)
+      setupFuture.onComplete(_ => println("schema creation complete"))
+    } finally db.close
+
+    println("tables created in postgreSql instance running locally")
+    println("see <database>.<schema>: findw.public")
+  }
+
+  def SlickFinDwLocal(): Unit = {
+    println("connecting to local postgres using TypeSafe configuration file: application.conf")
     val db = Database.forConfig("local")
     try {
       println("Create the tables, including primary and foreign keys")
-      val foo = TestSlickExmaple
-      //      val setupFuture = db.run(foo.setup)
+      val setupFuture = db.run(FinDwSchema.setup)
     } finally db.close
 
-    println("tables created in postgreSql instance running on AWS")
+    println("tables created in postgreSql instance running locally")
     println("see <database>.<schema>: findw.public")
   }
+
+
+  def SlickRefactorLocal(): Unit = {
+    println("connecting to local postgres using TypeSafe configuration file: application.conf")
+    val db = Database.forConfig("local")
+    try {
+      println("Create the tables, including primary and foreign keys")
+      val setupFuture = db.run(Refactored.setup)
+    } finally db.close
+
+    println("tables created in postgreSql instance running locally")
+    println("see <database>.<schema>: findw.public")
+  }
+
 
   def YahooLib(): Unit = {
     val data = DataDownload.yahoolib()
@@ -82,10 +108,11 @@ object Main {
     //    Tests.SlickAws()
     //    Tests.HttpDownload()
     //    Tests.YahooLib()
-    //    val x = Tests.QueryDb
-    val y = Tests.WaitForQuery
-
     //    Tests.UpdateData()
+    //    val x = Tests.QueryDb
+    //    val y = Tests.WaitForQuery
+//    Tests.SlickFinDwLocal()
+    Tests.SlickFinDwCloud()
   }
 
   def main(args: Array[String]): Unit = {
@@ -96,7 +123,6 @@ object Main {
     test()
 
     val end = System.currentTimeMillis()
-
     println(s"execution complete ${end - start} ms")
   }
 

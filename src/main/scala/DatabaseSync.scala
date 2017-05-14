@@ -1,19 +1,16 @@
 import slick.jdbc.PostgresProfile.api._
 
 object FinDwSchema {
+  println("FinDwSchema")
   val stock = TableQuery[Stock]
   val stockohlc = TableQuery[StockOHLC]
   // TODO: fix so both tables can be created at same time
-  //  val schema = stock.schema ++ stockohlc.schema
-  val schema = stockohlc.schema
-  // create table(S)
-  val priceData = new PriceIO("MSFT")
-  val values = priceData.uploadPriceData()
-  val setup = DBIO.seq(schema.create,
-    stockohlc ++= values.toSeq
-
-
-  )
+  //  var schema = stock.schema ++ stockohlc.schema
+  //  val schema = stockohlc.schema
+  // create table(s)
+  //  val priceData = new PriceIO("MSFT")
+  //  val values = priceData.uploadPriceData()
+  val setup = DBIO.seq((stock.schema ++ stockohlc.schema).create)
 
   // Definition of the stock table (always use lowercase and _)
   class Stock(tag: Tag) extends Table[(String, String, Option[String], Option[String], Option[Int])](tag, Some("dim"), "stock") {
@@ -62,8 +59,6 @@ object FinDwSchema {
 
 }
 
-//
-//
 object TestSlickExmaple {
 
 
