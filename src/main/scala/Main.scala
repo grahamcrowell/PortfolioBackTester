@@ -5,8 +5,8 @@
 import FinDwSchema.{Stock, StockOHLC}
 import slick.jdbc.PostgresProfile.api._
 
+import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent._
-import ExecutionContext.Implicits.global
 import scala.concurrent.duration.Duration
 
 object Tests {
@@ -60,6 +60,70 @@ object Tests {
       }, Duration.Inf)
   }
 
+  /**
+    *
+    * get most recent date id for each stock in price table
+    *
+    */
+  def getPriceRecency: Unit = {
+
+    val db = Database.forConfig("aws")
+    val stock = TableQuery[Stock]
+    val price = TableQuery[StockOHLC]
+
+    /**
+      * sequence of chained query-like expressions
+      */
+    def leftJoin(): Unit = {
+      val leftOuterJoin = for {
+        s <- stock
+        p <- price
+        if s.symbol === p.stock_symbol
+
+      } yield (s.symbol, p.date_id)
+
+      val leftOuterJoinGrouped = (for {
+        s <- stock
+        p <- price
+        if s.symbol === p.stock_symbol
+
+      } yield (s, p)).groupBy(_._1.symbol)
+
+      val leftOuterJoinAgg = leftOuterJoinGrouped.map {
+        case (s, p) => (s, p.map {
+          _._2.date_id
+        }.max)
+      }
+
+      // DISINTCT SYMBOL
+      Await.result(
+        db.run(
+          leftOuterJoin.map(_._1).distinct.result).map { res =>
+          println(res)
+        }
+        , Duration.Inf
+
+      )
+
+      // MAX DATE GROUP BY SYMBOL
+      Await.result(
+        db.run(
+          leftOuterJoinAgg.result).map { res =>
+          println(res)
+        }
+        , Duration.Inf
+      )
+    }
+
+    leftJoin()
+
+    // all stock names
+    Await.result(
+      db.run(stock.map(_.name).result).map { res =>
+        println(res)
+      }, Duration.Inf)
+  }
+
   def isCompletedDbQuery: Unit = {
     // database config
     val db = Database.forConfig("aws")
@@ -94,6 +158,7 @@ object Main {
     //    Tests.SlickFinDwAws()
     //    Tests.UploadPriceData("A")
     //    Tests.UpdateAllStockPriceData
+    Tests.getPriceRecency
   }
 
   def main(args: Array[String]): Unit = {
