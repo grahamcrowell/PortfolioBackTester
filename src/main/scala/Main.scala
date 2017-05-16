@@ -60,6 +60,49 @@ object Tests {
       }, Duration.Inf)
   }
 
+  def simpleMovingAverage(period: Int): Unit = {
+    val db = Database.forConfig("aws")
+    val stock = TableQuery[Stock]
+    val price = TableQuery[StockOHLC]
+
+    val q2 = for {
+      c <- price if c.stock_symbol === "AA"
+    } yield (c.adjusted_close, c.stock_symbol, c.date_id, c.adjusted_close)
+
+    val q1 = q2.map {
+      case (s,p,t,v) => (s)
+    }
+
+
+
+    Await.result(
+      db.run(
+        q1.result).map { res =>
+        println(res)
+        val q3 = res.toList
+        val q4 = q3.iterator.sliding(period).toList
+        println(q4)
+        val totals = q4.map {
+          _.sum/period
+        }
+        println(totals)
+
+//        val sums = q4.map {
+//          _.sum
+//        }
+//        println(sums)
+      }
+
+
+
+      , Duration.Inf
+
+    )
+
+
+
+  }
+
   /**
     *
     * get most recent date id for each stock in price table
@@ -158,7 +201,8 @@ object Main {
     //    Tests.SlickFinDwAws()
     //    Tests.UploadPriceData("A")
     //    Tests.UpdateAllStockPriceData
-    Tests.getPriceRecency
+    //Tests.getPriceRecency
+    Tests.simpleMovingAverage(5)
   }
 
   def main(args: Array[String]): Unit = {
