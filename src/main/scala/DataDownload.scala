@@ -3,12 +3,29 @@ import java.util.function.Consumer
 import java.{text, util}
 import java.text.{DateFormat, SimpleDateFormat}
 
-import FinDwSchema.StockOHLC
+import FinDwSchema.{Stock, StockOHLC}
 import slick.lifted.TableQuery
 import yahoofinance.YahooFinance
 import yahoofinance.histquotes.{HistoricalQuote, Interval}
 import slick.jdbc.PostgresProfile.api._
+
 import scala.collection.JavaConverters._
+
+
+object PriceOps {
+
+//  : Seq[Tuple2[String, Int]]
+  def getLastUpdates(): Unit = {
+    val db = Database.forConfig("aws")
+    // declare a query against Stock table
+    val stock_query = TableQuery[Stock]
+    val price_query = TableQuery[StockOHLC]
+
+    val leftOuterJoinGrouped = (for {
+      (stock_data, price_data) <- stock_query joinLeft price_query on (_.symbol === _.stock_symbol)
+    } yield (stock_data, price_data)).groupBy(_._1.symbol)
+  }
+}
 
 /**
   * Downloads price data

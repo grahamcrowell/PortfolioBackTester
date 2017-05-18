@@ -322,3 +322,4 @@ pip-log.txt
 .idea/modules.xml
 .idea/workspace.xml
 src/main/resources/application.conf
+log.txt
