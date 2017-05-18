@@ -70,22 +70,68 @@ object Tests {
     } yield (c.adjusted_close, c.stock_symbol, c.date_id, c.adjusted_close)
 
     val q1 = q2.map {
-      case (s,p,t,v) => (s)
+      case (s,p,t,v) => (s,t)
     }
 
+    val bastard = for {
+      c <- price if c.stock_symbol === "AA"
+    } yield (c.adjusted_close, c.date_id)
 
+
+    val aggr = (price: Seq[Double]) => price.sum/period
+
+    val aggr2 = Seq[Double] (1.1,1.2)
+    val listOflists = Seq[Seq[Double]](Seq(1.1,3.5),Seq(3.5,7.4), aggr2)
+
+    val subSum = listOflists.map { aggr }
+
+    println(subSum)
+
+    println(aggr(aggr2))
+
+
+
+
+//    val aggrTuple = (priceDate: Seq[Tuple2[Double, Int]]) => priceDate(0)._.sum/period
+//
+//    val aggr2 = Seq[Double] (1.1,1.2)
+//    val listOflists = Seq[Seq[Double]](Seq(1.1,3.5),Seq(3.5,7.4), aggr2)
+//
+//    val subSum = listOflists.map { aggr }
+//
+//    println(subSum)
+//
+//    println(aggr(aggr2))
+
+
+    val messy = List[Seq[Tuple2[Double,Int]]](Seq((1,2),(2,3),(4,5)),Seq((1,2),(2,3),(4,5)),Seq((1,2),(2,3),(4,5)))
+    def foo(list: Seq[Tuple2[Double,Int]]): Tuple2[Double, Int] = {
+      list.unzip match { case (l1, l2) => (l1.sum, l2.max) }
+    }
+    messy.map { foo }
 
     Await.result(
       db.run(
-        q1.result).map { res =>
+        bastard.result).map { res =>
         println(res)
-        val q3 = res.toList
+        val q3 = res.toList//[(Double,Int)]
         val q4 = q3.iterator.sliding(period).toList
         println(q4)
-        val totals = q4.map {
-          _.sum/period
-        }
-        println(totals)
+        q4.map {foo}
+
+//        val subAggs = q4.foldLeft((0.0,0)) {case ((accA, accB), (a,b)) => (accA+a, accB+b)}
+//        val subAggs = q4.toList.unzip match {
+//          case(fuck, you) => (fuck.sum, you.max)
+//        }
+
+
+       // val total = q4.map(_._1).sum
+        //q4.map(_._2).max
+
+
+
+        // val totals = q4.map {aggr}
+        //println(totals)
 
 //        val sums = q4.map {
 //          _.sum
