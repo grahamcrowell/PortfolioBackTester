@@ -77,10 +77,10 @@ object Tests {
     }
 
     //function to get the moving average for each date
-    //input: sequence of tuples??
-    //output: sum of sequence of tuples, max date
+    //input: Sequence[Tuple2]??
+    //output: sum of sequence of tuples, max date. Tuple2
     def listofSeqTuple(list: Seq[Tuple2[Double,Int]]): Tuple2[Double, Int] = {
-      list.unzip match { case (l1, l2) => (l1.sum/period, l2.max) }
+      list.unzip match { case (l1, l2) => (l1.sum/period, l2.max) } //tuples containing values < period would not be correct (mva of 5 would not have first 5 dates)
     }
 
     //input -> window of values -> moving average
@@ -92,7 +92,7 @@ object Tests {
         val q3 = res.toList// create list of tuple2 [(Double,Int)]
         val q4 = q3.iterator.sliding(period).toList //create list of the tuples based on the size of period
         //println(q4)
-        val q5 = q4.map {listofSeqTuple} //List[Tuple2[Double,Int]] is this the only thing returned??
+        val q5 = q4.map {listofSeqTuple} //List[Tuple2[Double,Int]] is this the only thing returned? how do we return it for further analysis?
         println(q5)
       }
       , Duration.Inf
