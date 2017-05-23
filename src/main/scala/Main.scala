@@ -60,42 +60,43 @@ object Tests {
       }, Duration.Inf)
   }
 
-  def simpleMovingAverage(period: Int): Unit = {
+  def simpleMovingAverage(period: Int, name: String): Unit = {
+    //connect to db and setup stock and price table
     val db = Database.forConfig("aws")
     val stock = TableQuery[Stock]
     val price = TableQuery[StockOHLC]
 
+    //output: adjusted close, symbol, date
     val q2 = for {
-      c <- price if c.stock_symbol === "AA"
-    } yield (c.adjusted_close, c.stock_symbol, c.date_id, c.adjusted_close)
+      c <- price if c.stock_symbol === name
+    } yield (c.adjusted_close, c.stock_symbol, c.date_id)
 
+    //output: future[tuple2]
     val q1 = q2.map {
-      case (s,p,t,v) => (s,t)
+      case (s,p,t) => (s,t)
     }
 
+    //function to get the moving average for each date
+    //input: sequence of tuples??
+    //output: sum of sequence of tuples, max date
     def listofSeqTuple(list: Seq[Tuple2[Double,Int]]): Tuple2[Double, Int] = {
-      list.unzip match { case (l1, l2) => (l1.sum, l2.max) }
+      list.unzip match { case (l1, l2) => (l1.sum/period, l2.max) }
     }
 
-
+    //input -> window of values -> moving average
+    //input: future[tuple2]
+    //output: List[tuple2]
     Await.result(
       db.run(
-        q1.result).map { res =>
-        println(res)
-        val q3 = res.toList//[(Double,Int)]
-        val q4 = q3.iterator.sliding(period).toList
-        println(q4)
-        q4.map {listofSeqTuple}
+        q1.result).map { res => println(res) //maps to Vector and prints results
+        val q3 = res.toList// create list of tuple2 [(Double,Int)]
+        val q4 = q3.iterator.sliding(period).toList //create list of the tuples based on the size of period
+        //println(q4)
+        val q5 = q4.map {listofSeqTuple} //List[Tuple2[Double,Int]] is this the only thing returned??
+        println(q5)
       }
-
-
-
       , Duration.Inf
-
     )
-
-
-
   }
 
   /**
@@ -197,7 +198,8 @@ object Main {
     //    Tests.UploadPriceData("A")
     //    Tests.UpdateAllStockPriceData
     //Tests.getPriceRecency
-    Tests.simpleMovingAverage(5)
+    Tests.simpleMovingAverage(5,"AA")
+    Tests.simpleMovingAverage(5,"A")
   }
 
   def main(args: Array[String]): Unit = {
