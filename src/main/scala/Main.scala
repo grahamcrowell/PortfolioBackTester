@@ -99,6 +99,17 @@ object Tests {
     )
   }
 
+  def linkMovingAverages: Unit = {
+
+    val a = simpleMovingAverage(5,"AA")
+    val b = simpleMovingAverage(10,"AA")
+
+    println(a)//returns empty list
+
+    //create a new map with key being dates (._2) with a second Int tuple of 1 or 0 depending if a > b
+
+  }
+
   /**
     *
     * get most recent date id for each stock in price table
@@ -199,7 +210,7 @@ object Main {
     //    Tests.UpdateAllStockPriceData
     //Tests.getPriceRecency
     Tests.simpleMovingAverage(5,"AA")
-    Tests.simpleMovingAverage(5,"A")
+
   }
 
   def main(args: Array[String]): Unit = {
