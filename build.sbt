@@ -14,3 +14,5 @@ libraryDependencies += "org.scalaj" %% "scalaj-http" % "2.3.0"
 
 //see: http://financequotes-api.com/
 libraryDependencies += "com.yahoofinance-api" % "YahooFinanceAPI" % "3.6.1"
+
+libraryDependencies += "org.scalatest" %% "scalatest" % "3.0.1" % "test"
