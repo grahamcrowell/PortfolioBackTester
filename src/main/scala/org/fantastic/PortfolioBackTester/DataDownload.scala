@@ -1,15 +1,27 @@
+//import java.util.Calendar
+//import java.util.function.Consumer
+//import java.{text, util}
+//import java.text.{DateFormat, SimpleDateFormat}
+//
+//import FinDwSchema.StockOHLC
+//import slick.lifted.TableQuery
+//import yahoofinance.YahooFinance
+//import yahoofinance.histquotes.{HistoricalQuote, Interval}
+//import slick.jdbc.PostgresProfile.api._
+//import scala.collection.JavaConverters._
+//
+
+
+package org.fantastic.PortfolioBackTester
+
+import java.text.SimpleDateFormat
 import java.util.Calendar
-import java.util.function.Consumer
-import java.{text, util}
-import java.text.{DateFormat, SimpleDateFormat}
-
-import FinDwSchema.StockOHLC
-import slick.lifted.TableQuery
 import yahoofinance.YahooFinance
-import yahoofinance.histquotes.{HistoricalQuote, Interval}
-import slick.jdbc.PostgresProfile.api._
+import yahoofinance.histquotes.Interval
 import scala.collection.JavaConverters._
-
+/**
+  * Created by gcrowell on 2017-05-24.
+  */
 /**
   * Downloads price data
   * @param symbol
@@ -34,7 +46,6 @@ class PriceIO(symbol: String = "INTC") {
     val interval = Interval.DAILY
     println(interval)
     val vector_HistoricalQuote = stock.getHistory(start, interval).asScala
-
     val sql_rows = for (historicalQuote <- vector_HistoricalQuote) yield {
       val date_id = new SimpleDateFormat("yyyyMMdd").format(historicalQuote.getDate().getTime).toInt
       (historicalQuote.getSymbol(), date_id, historicalQuote.getOpen().doubleValue, historicalQuote.getHigh().doubleValue, historicalQuote.getLow().doubleValue, historicalQuote.getClose().doubleValue, historicalQuote.getVolume().intValue, historicalQuote.getAdjClose().doubleValue)

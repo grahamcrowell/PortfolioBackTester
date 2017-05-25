@@ -2,16 +2,24 @@
   * Created by gcrowell on 4/28/2017.
   */
 
+package org.fantastic.PortfolioBackTester
+
+
 import java.text.SimpleDateFormat
 
-import FinDwSchema.{Stock, StockOHLC}
 import slick.jdbc.PostgresProfile.api._
+
 import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent._
 import scala.concurrent.duration.Duration
 import java.util.Calendar
 
+
 object Tests {
+
+  def getDb(): Database = {
+    Database.forConfig("aws")
+  }
 
   def SlickFinDwAws(): Unit = {
     println("connecting to local postgres using TypeSafe configuration file: application.conf")
@@ -62,6 +70,17 @@ object Tests {
       }, Duration.Inf)
   }
 
+  def linkMovingAverages: Unit = {
+
+    val a = simpleMovingAverage(5, "AA")
+    val b = simpleMovingAverage(10, "AA")
+
+    println(a) //returns empty list
+
+    //create a new map with key being dates (._2) with a second Int tuple of 1 or 0 depending if a > b
+
+  }
+
   def simpleMovingAverage(period: Int, name: String): Unit = {
     //connect to db and setup stock and price table
     val db = Database.forConfig("aws")
@@ -75,14 +94,16 @@ object Tests {
 
     //output: future[tuple2]
     val q1 = q2.map {
-      case (s,p,t) => (s,t)
+      case (s, p, t) => (s, t)
     }
 
     //function to get the moving average for each date
     //input: Sequence[Tuple2]??
     //output: sum of sequence of tuples, max date. Tuple2
-    def listofSeqTuple(list: Seq[Tuple2[Double,Int]]): Tuple2[Double, Int] = {
-      list.unzip match { case (l1, l2) => (l1.sum/period, l2.max) } //tuples containing values < period would not be correct (mva of 5 would not have first 5 dates)
+    def listofSeqTuple(list: Seq[Tuple2[Double, Int]]): Tuple2[Double, Int] = {
+      list.unzip match {
+        case (l1, l2) => (l1.sum / period, l2.max)
+      } //tuples containing values < period would not be correct (mva of 5 would not have first 5 dates)
     }
 
     //input -> window of values -> moving average
@@ -90,50 +111,45 @@ object Tests {
     //output: List[tuple2]
     Await.result(
       db.run(
-        q1.result).map { res => println(res) //maps to Vector and prints results
-        val q3 = res.toList// create list of tuple2 [(Double,Int)]
-        val q4 = q3.iterator.sliding(period).toList //create list of the tuples based on the size of period
+        q1.result).map { res =>
+        println(res)
+        //maps to Vector and prints results
+        val q3 = res.toList
+        // create list of tuple2 [(Double,Int)]
+        val q4 = q3.iterator.sliding(period).toList
+        //create list of the tuples based on the size of period
         //println(q4)
-        val q5 = q4.map {listofSeqTuple} //List[Tuple2[Double,Int]] is this the only thing returned? how do we return it for further analysis?
+        val q5 = q4.map {
+          listofSeqTuple
+        } //List[Tuple2[Double,Int]] is this the only thing returned? how do we return it for further analysis?
         println(q5)
       }
       , Duration.Inf
     )
   }
 
-  def linkMovingAverages: Unit = {
-
-    val a = simpleMovingAverage(5,"AA")
-    val b = simpleMovingAverage(10,"AA")
-
-    println(a)//returns empty list
-
-    //create a new map with key being dates (._2) with a second Int tuple of 1 or 0 depending if a > b
-
-  }
-
-  def getOffset (today: Calendar): Int = {
-    if (today.get(Calendar.DAY_OF_WEEK) == 1) -2
-    else if(today.get(Calendar.DAY_OF_WEEK) == 2) -3
-    else if(today.get(Calendar.HOUR_OF_DAY) < 13) -1
-    else 0
-  }
-
   def getExpectedMaxDate: Int = {
     val now = Calendar.getInstance()
     val offset = getOffset(now)
-    now.add(Calendar.DAY_OF_MONTH,offset)//
-    val s  = new SimpleDateFormat("yyyyMMdd")
+    now.add(Calendar.DAY_OF_MONTH, offset)
+    //
+    val s = new SimpleDateFormat("yyyyMMdd")
     s.format(now.getTime()).toInt
   }
 
+  def getOffset(today: Calendar): Int = {
+    if (today.get(Calendar.DAY_OF_WEEK) == 1) -2
+    else if (today.get(Calendar.DAY_OF_WEEK) == 2) -3
+    else if (today.get(Calendar.HOUR_OF_DAY) < 13) -1
+    else 0
+  }
 
   /**
     *
     * get most recent date id for each stock in price table
     *
     */
-  def getPriceRecency: Unit = {
+  def priceQueries: Unit = {
 
     val db = Database.forConfig("aws")
     val stock = TableQuery[Stock]
@@ -195,7 +211,7 @@ object Tests {
   def isCompletedDbQuery: Unit = {
     // database config
     val db = Database.forConfig("aws")
-    // declare a query against Stock table
+    // declare a query against org.fantastic.findw.Stock table
     val stock = TableQuery[Stock]
     // initiate/begin the query
     // runit is an instance of "Future"
@@ -215,6 +231,17 @@ object Tests {
 
 object Main {
 
+  def main(args: Array[String]): Unit = {
+    println(s"program starting")
+    val start = System.currentTimeMillis()
+    println(s"current working directory: ${System.getProperty("user.dir")}")
+
+    test()
+
+    val end = System.currentTimeMillis()
+    println(s"execution complete ${end - start} ms")
+  }
+
   def test(): Unit = {
     //    Tests.SlickAws()
     //    Tests.HttpDownload()
@@ -226,20 +253,9 @@ object Main {
     //    Tests.SlickFinDwAws()
     //    Tests.UploadPriceData("A")
     //    Tests.UpdateAllStockPriceData
-    Tests.getPriceRecency
+    //    Tests.priceQueries
     //Tests.simpleMovingAverage(5,"AA")
-
-  }
-
-  def main(args: Array[String]): Unit = {
-    println(s"program starting")
-    val start = System.currentTimeMillis()
-    println(s"current working directory: ${System.getProperty("user.dir")}")
-
-    test()
-
-    val end = System.currentTimeMillis()
-    println(s"execution complete ${end - start} ms")
+    PriceSync.getOutDated()
   }
 
 }

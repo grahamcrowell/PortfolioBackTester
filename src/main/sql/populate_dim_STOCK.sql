@@ -2531,7 +2531,7 @@ INSERT INTO dim.stock (symbol, company_name, nasdaq_id) VALUES ('NCOC','National
 INSERT INTO dim.stock (symbol, company_name, nasdaq_id) VALUES ('NCR','Ncr Corp New',2066);
 INSERT INTO dim.stock (symbol, company_name, nasdaq_id) VALUES ('NCS','Nci Building Sys Inc',9959);
 INSERT INTO dim.stock (symbol, company_name, nasdaq_id) VALUES ('NCT','Newcastle Invt Corp',112959);
-INSERT INTO dim.stock (symbol, company_name, nasdaq_id) VALUES ('NDAQ','Nasdaq Stock Martket',85928);
+INSERT INTO dim.stock (symbol, company_name, nasdaq_id) VALUES ('NDAQ','Nasdaq org.fantastic.findw.Stock Martket',85928);
 INSERT INTO dim.stock (symbol, company_name, nasdaq_id) VALUES ('NDN','99 Cents Only Stores',NULL);
 INSERT INTO dim.stock (symbol, company_name, nasdaq_id) VALUES ('NDSN','Nordson Corp',10478);
 INSERT INTO dim.stock (symbol, company_name, nasdaq_id) VALUES ('NEBS','New England Bancshar',NULL);
