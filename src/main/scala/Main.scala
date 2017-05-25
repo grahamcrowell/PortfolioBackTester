@@ -2,12 +2,14 @@
   * Created by gcrowell on 4/28/2017.
   */
 
+import java.text.SimpleDateFormat
+
 import FinDwSchema.{Stock, StockOHLC}
 import slick.jdbc.PostgresProfile.api._
-
 import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent._
 import scala.concurrent.duration.Duration
+import java.util.Calendar
 
 object Tests {
 
@@ -110,6 +112,22 @@ object Tests {
 
   }
 
+  def getOffset (today: Calendar): Int = {
+    if (today.get(Calendar.DAY_OF_WEEK) == 1) -2
+    else if(today.get(Calendar.DAY_OF_WEEK) == 2) -3
+    else if(today.get(Calendar.HOUR_OF_DAY) < 13) -1
+    else 0
+  }
+
+  def getExpectedMaxDate: Int = {
+    val now = Calendar.getInstance()
+    val offset = getOffset(now)
+    now.add(Calendar.DAY_OF_MONTH,offset)//
+    val s  = new SimpleDateFormat("yyyyMMdd")
+    s.format(now.getTime()).toInt
+  }
+
+
   /**
     *
     * get most recent date id for each stock in price table
@@ -208,8 +226,8 @@ object Main {
     //    Tests.SlickFinDwAws()
     //    Tests.UploadPriceData("A")
     //    Tests.UpdateAllStockPriceData
-    //Tests.getPriceRecency
-    Tests.simpleMovingAverage(5,"AA")
+    Tests.getPriceRecency
+    //Tests.simpleMovingAverage(5,"AA")
 
   }
 
