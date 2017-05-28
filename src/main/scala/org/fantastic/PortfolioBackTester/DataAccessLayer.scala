@@ -32,8 +32,7 @@ trait Updatable {
 
 case object PriceSync {
 
-  def getExpectedMostRecentDate: Int = {
-    val now = Calendar.getInstance()
+  def getExpectedMostRecentDate(now: Calendar = Calendar.getInstance()): Int = {
     val offsetDayCount = getOffsetDayCount(now)
     now.add(Calendar.DAY_OF_MONTH, offsetDayCount)
     val s = new SimpleDateFormat("yyyyMMdd")
@@ -41,9 +40,9 @@ case object PriceSync {
   }
 
   def getOffsetDayCount(today: Calendar): Int = {
-    if (today.get(Calendar.DAY_OF_WEEK) == 7) -1
-    else if (today.get(Calendar.DAY_OF_WEEK) == 1) -2
-    else if ((today.get(Calendar.DAY_OF_WEEK) == 2) && (today.get(Calendar.HOUR_OF_DAY) < 13)) -3
+    if (today.get(Calendar.DAY_OF_WEEK) == Calendar.SATURDAY) -1
+    else if (today.get(Calendar.DAY_OF_WEEK) == Calendar.SUNDAY) -2
+    else if ((today.get(Calendar.DAY_OF_WEEK) == Calendar.MONDAY) && (today.get(Calendar.HOUR_OF_DAY) < 13)) -3
     else 0
   }
 
