@@ -20,5 +20,8 @@ monday.set(2017, 4, 29,  12, 3 )
 monday.get(Calendar.DAY_OF_WEEK)
 monday.getTime
 
+val b = 20150506
+val a = new SimpleDateFormat("yyyyMMdd")
+a.parse(b.toString())
 
 

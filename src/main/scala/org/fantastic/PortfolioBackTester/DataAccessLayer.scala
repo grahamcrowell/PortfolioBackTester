@@ -1,3 +1,4 @@
+
 package org.fantastic.PortfolioBackTester
 
 import java.util.Calendar
@@ -10,6 +11,7 @@ import slick.jdbc.PostgresProfile.api._
 import scala.concurrent.Await
 import scala.concurrent.duration.Duration
 import scala.concurrent.ExecutionContext.Implicits.global
+
 
 abstract class UpdateTaskSpec
 
@@ -35,8 +37,7 @@ case object PriceSync {
   def getExpectedMostRecentDate(now: Calendar = Calendar.getInstance()): Int = {
     val offsetDayCount = getOffsetDayCount(now)
     now.add(Calendar.DAY_OF_MONTH, offsetDayCount)
-    val s = new SimpleDateFormat("yyyyMMdd")
-    s.format(now.getTime()).toInt
+    Common.calToInt(now)
   }
 
   def getOffsetDayCount(today: Calendar): Int = {

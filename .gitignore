@@ -326,3 +326,4 @@ log.txt
 src/test/scala/org/fantastic/PortfolioBackTester/DataAccessLayerSpec.scala
 src/main/scala/org/fantastic/PortfolioBackTester/Sandbox.sc
 src/test/scala/org/fantastic/PortfolioBackTester/DataAccessLayerSpec.scala
+src/main/scala/org/fantastic/PortfolioBackTester/Sandbox.sc
