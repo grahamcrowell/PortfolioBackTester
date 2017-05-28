@@ -67,7 +67,7 @@ case object PriceSync {
         leftOuterJoinAgg.result).map { res => println(res) }, Duration.Inf
     )
 
-    Seq[UpdatePriceTaskSpec]()
+//    Seq[UpdatePriceTaskSpec]()
 
   }
 
