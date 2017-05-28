@@ -255,7 +255,7 @@ object Main {
     //    Tests.UpdateAllStockPriceData
     //    Tests.priceQueries
     //Tests.simpleMovingAverage(5,"AA")
-    PriceSync.getOutDated()
+    //PriceSync.getOutDated()
   }
 
 }

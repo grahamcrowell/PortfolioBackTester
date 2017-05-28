@@ -41,35 +41,35 @@ case object PriceSync {
   }
 
   def getOffsetDayCount(today: Calendar): Int = {
-    if (today.get(Calendar.DAY_OF_WEEK) == 1) -2
-    else if (today.get(Calendar.DAY_OF_WEEK) == 2) -3
-    else if (today.get(Calendar.HOUR_OF_DAY) < 13) -1
+    if (today.get(Calendar.DAY_OF_WEEK) == 7) -1
+    else if (today.get(Calendar.DAY_OF_WEEK) == 1) -2
+    else if ((today.get(Calendar.DAY_OF_WEEK) == 2) && (today.get(Calendar.HOUR_OF_DAY) < 13)) -3
     else 0
   }
 
-  def getOutDated(): Seq[UpdatePriceTaskSpec] = {
-    val db = Database.forConfig("aws")
-    val stock = TableQuery[Stock]
-    val price = TableQuery[StockOHLC]
-
-    val leftOuterJoinGrouped = (for {
-      (s, p) <- stock joinLeft price on (_.symbol === _.stock_symbol)
-    } yield (s.symbol, p.map(_.date_id)))
+//  def getOutDated(): Seq[UpdatePriceTaskSpec] = {
+//    val db = Database.forConfig("aws")
+//    val stock = TableQuery[Stock]
+//    val price = TableQuery[StockOHLC]
+//
+//    val leftOuterJoinGrouped = (for {
+//      (s, p) <- stock joinLeft price on (_.symbol === _.stock_symbol)
+//    } yield (s.symbol, p.map(_.date_id)))
 
 
 //    val leftOuterJoinAgg = leftOuterJoinGrouped.map {
 //      case (s, p) => (s, p.)
 //    }
 
-
-    Await.result(
-      db.run(
-        leftOuterJoinAgg.result).map { res => println(res) }, Duration.Inf
-    )
+//
+//    Await.result(
+//      db.run(
+//        leftOuterJoinAgg.result).map { res => println(res) }, Duration.Inf
+//    )
 
 //    Seq[UpdatePriceTaskSpec]()
 
-  }
+//  }
 
 
 }

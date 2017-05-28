@@ -1,24 +1,24 @@
-//package org.fantastic.PortfolioBackTester
-
 import java.text.SimpleDateFormat
+import java.util.Calendar
 
-import org.fantastic.PortfolioBackTester._
-import slick.jdbc.PostgresProfile.api._
+val today = Calendar.MONDAY
 
-  import scala.concurrent.ExecutionContext.Implicits.global
-import scala.concurrent._
-import scala.concurrent.duration
+val saturday = Calendar.getInstance()
+val sunday = Calendar.getInstance()
 
-val t = Tests.getDb()
-//val db : Database = t.getDb()
-val stock = TableQuery[Stock]
-val price = TableQuery[StockOHLC]
+saturday.set(2017, 4, 27)
+saturday.get(Calendar.DAY_OF_WEEK)
 
-val leftOuterJoinGrouped = (for {
-(s, p) <- stock joinLeft price on (_.symbol === _.stock_symbol)
-} yield (s, p) ).groupBy (_._1.symbol)
+sunday.set(2017, 4, 28)
+sunday.get(Calendar.DAY_OF_WEEK)
 
+val s = new SimpleDateFormat("yyyyMMdd")
+s.format(saturday.getTime()).toInt
 
+val monday = Calendar.getInstance() //sets saturday as Calendar type
+monday.set(2017, 4, 29,  12, 3 )
+monday.get(Calendar.DAY_OF_WEEK)
+monday.getTime
 
 
 
