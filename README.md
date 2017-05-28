@@ -11,6 +11,7 @@ Build a versatile application to both back test and forward test stock market st
 
 - Documentation of method and logic, and build shell
 - Initial build of data layer
+  - Create the tables and download the data
 - Build application to output results of one single strategy
 
 **Phase 2:** Refinement
