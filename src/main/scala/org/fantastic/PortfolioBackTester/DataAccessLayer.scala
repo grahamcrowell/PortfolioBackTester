@@ -41,19 +41,19 @@ case object PriceSync {
     now
   }
 
-  def negativeint (test: Int): Calendar  = {
-    val x = -20170405
-    println(x)
-    x
-  }
-
   def getOffsetDayCount(today: Calendar): Int = {
-    if (today.get(Calendar.DAY_OF_WEEK) == Calendar.SATURDAY) -1
-    else if (today.get(Calendar.DAY_OF_WEEK) == Calendar.SUNDAY) -2
-    else if ((today.get(Calendar.DAY_OF_WEEK) == Calendar.MONDAY) && (today.get(Calendar.HOUR_OF_DAY) < 13)) -3
-    else 0
+    val todayDayOfWeek = today.get(Calendar.DAY_OF_WEEK)
+    val todayHourOfDay = today.get(Calendar.HOUR_OF_DAY)
+    todayDayOfWeek match {
+      case Calendar.SATURDAY => -1
+      case Calendar.SUNDAY => -2
+      case Calendar.MONDAY => todayHourOfDay match {
+        case _ => if (todayHourOfDay < 13) -3 else 0
+      }
+      // if todayDayOfWeek is T, W, H, or F and markets open (ie <13) then yesterday is expected
+      case _ => if (todayHourOfDay < 13) -1 else 0
+    }
   }
-
   def getOutDated(): Seq[UpdatePriceTaskSpec] = {
     val db = Database.forConfig("aws")
     val stock = TableQuery[Stock]
