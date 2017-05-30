@@ -10,12 +10,20 @@ import java.util.Date
   */
 object Common {
 
-  implicit def calToInt (x: Calendar) : Int = {
+  implicit def toInt(x: Calendar) : Int = {
     val s = new SimpleDateFormat("yyyyMMdd")
     s.format(x.getTime()).toInt
   }
 
-  implicit def intToCal (x: Int) : Date = {
+  implicit def toCalendar(x: Int) : Calendar = {
+    val calendarOut = Calendar.getInstance()
+    val s = new SimpleDateFormat("yyyyMMdd")
+    calendarOut.setTime(s.parse(x.toString()))
+    calendarOut
+  }
+
+
+  implicit def toDate(x: Int) : Date = {
     val s = new SimpleDateFormat("yyyyMMdd")
     s.parse(x.toString())
   }

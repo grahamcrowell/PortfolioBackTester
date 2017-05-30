@@ -1,3 +1,4 @@
+
 name := "PortfolioBackTester"
 
 version := "1.0"
@@ -16,3 +17,8 @@ libraryDependencies += "org.scalaj" %% "scalaj-http" % "2.3.0"
 libraryDependencies += "com.yahoofinance-api" % "YahooFinanceAPI" % "3.6.1"
 
 libraryDependencies += "org.scalatest" %% "scalatest" % "3.0.1" % "test"
+
+libraryDependencies ++= Seq(
+  "com.typesafe.akka" %% "akka-actor" % "2.5.2",
+  "com.typesafe.akka" %% "akka-testkit" % "2.5.2" % Test
+)

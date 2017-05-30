@@ -1,7 +1,7 @@
 
 package org.fantastic.PortfolioBackTester
 
-import java.util.Calendar
+import java.util.{Calendar, Date}
 import java.text.SimpleDateFormat
 
 import slick.lifted.TableQuery
@@ -20,25 +20,6 @@ case class UpdatePriceTaskSpec(symbol: String, fromDate: Option[Int]) extends Up
 
 case object PriceSync {
 
-  def getExpectedMostRecentDate(now: Calendar = Calendar.getInstance()): Int = {
-    val offsetDayCount = getOffsetDayCount(now)
-    now.add(Calendar.DAY_OF_MONTH, offsetDayCount)
-    now
-  }
-
-  def getOffsetDayCount(today: Calendar): Int = {
-    val todayDayOfWeek = today.get(Calendar.DAY_OF_WEEK)
-    val todayHourOfDay = today.get(Calendar.HOUR_OF_DAY)
-    todayDayOfWeek match {
-      case Calendar.SATURDAY => -1
-      case Calendar.SUNDAY => -2
-      case Calendar.MONDAY => todayHourOfDay match {
-        case _ => if (todayHourOfDay < 13) -3 else 0
-      }
-      // if todayDayOfWeek is T, W, H, or F and markets open (ie <13) then yesterday is expected
-      case _ => if (todayHourOfDay < 13) -1 else 0
-    }
-  }
   def getOutDated(): Seq[UpdatePriceTaskSpec] = {
     val db = Database.forConfig("aws")
     val stock = TableQuery[Stock]
@@ -67,6 +48,55 @@ case object PriceSync {
     result.map {
       case (s, p) => UpdatePriceTaskSpec(s, p)
     }
+
+  }
+
+  def getExpectedMostRecentDate(now: Calendar = Calendar.getInstance()): Int = {
+    val offsetDayCount = getOffsetDayCount(now)
+    now.add(Calendar.DAY_OF_MONTH, offsetDayCount)
+    now
+  }
+
+  def getOffsetDayCount(today: Calendar): Int = {
+    val todayDayOfWeek = today.get(Calendar.DAY_OF_WEEK)
+    val todayHourOfDay = today.get(Calendar.HOUR_OF_DAY)
+    todayDayOfWeek match {
+      case Calendar.SATURDAY => -1
+      case Calendar.SUNDAY => -2
+      case Calendar.MONDAY => todayHourOfDay match {
+        case _ => if (todayHourOfDay < 13) -3 else 0
+      }
+      // if todayDayOfWeek is T, W, H, or F and markets open (ie <13) then yesterday is expected
+      case _ => if (todayHourOfDay < 13) -1 else 0
+    }
+  }
+}
+
+import akka.actor.Actor
+import akka.actor.Props
+import akka.event.Logging
+import java.text.SimpleDateFormat
+import java.util.Calendar
+import yahoofinance.YahooFinance
+import yahoofinance.histquotes.Interval
+import scala.collection.JavaConverters._
+
+class PriceUpdateTask(task: UpdatePriceTaskSpec)  {
+
+  def downloadData(): Unit = {
+    def getData(symbol: String, fromDate: Calendar): Seq[Tuple8[String, Int, Double, Double, Double, Double, Int, Double]] = {
+      // TODO: function that checks if symbol exists in database
+      val stock = YahooFinance.get(symbol)
+
+      val interval = Interval.DAILY
+      val vector_HistoricalQuote = stock.getHistory(fromDate, interval).asScala
+      val sql_rows = for (historicalQuote <- vector_HistoricalQuote) yield {
+        val date_id = new SimpleDateFormat("yyyyMMdd").format(historicalQuote.getDate().getTime).toInt
+        (historicalQuote.getSymbol(), date_id, historicalQuote.getOpen().doubleValue, historicalQuote.getHigh().doubleValue, historicalQuote.getLow().doubleValue, historicalQuote.getClose().doubleValue, historicalQuote.getVolume().intValue, historicalQuote.getAdjClose().doubleValue)
+      }
+      return sql_rows
+    }
+
 
   }
 
