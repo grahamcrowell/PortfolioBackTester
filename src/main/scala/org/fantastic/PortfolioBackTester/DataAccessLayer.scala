@@ -70,12 +70,12 @@ case object PriceSync {
       }.max)
     }
 
-
-
+    val expectedMostRecentDate = getExpectedMostRecentDate()
+    val filterUpToDate = leftOuterJoinGroup.filter(_._2 < expectedMostRecentDate)
 
     // wait for query results to return
     val result = Await.result(
-      db.run(leftOuterJoinGroup.result)
+      db.run(filterUpToDate.result)
       , Duration.Inf
     )
 

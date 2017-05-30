@@ -106,3 +106,17 @@ class DataAccessLayerSpec extends FunSpec with Matchers {
     }
   }
 }
+
+
+class DataAccessLayerSpecOutdated extends FunSpec with Matchers {
+  describe("getOutdated") {
+    it("should not have any null dates") {
+      val priceSync = PriceSync
+      val updatePriceTaskSpecSeq: Seq[UpdatePriceTaskSpec] = priceSync.getOutDated()
+      val row = updatePriceTaskSpecSeq(0)
+      val fromDate = row.fromDate
+      println(s"fromDate.toString() = ${fromDate.toString()}")
+
+    }
+  }
+}
