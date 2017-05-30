@@ -18,21 +18,6 @@ abstract class UpdateTaskSpec
 
 case class UpdatePriceTaskSpec(symbol: String, fromDate: Option[Int]) extends UpdateTaskSpec
 
-trait Source {
-  def getExpectedMostRecentDate(): Calendar
-}
-
-trait Destination {
-  def getLastUpdate(): Seq[UpdatePriceTaskSpec]
-}
-
-trait Updatable {
-  def getLastUpdate(symbol: String): UpdatePriceTaskSpec
-
-
-}
-
-
 case object PriceSync {
 
   def getExpectedMostRecentDate(now: Calendar = Calendar.getInstance()): Int = {
