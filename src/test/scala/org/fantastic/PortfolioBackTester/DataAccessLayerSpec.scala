@@ -91,5 +91,18 @@ class DataAccessLayerSpec extends FunSpec with Matchers {
       val s = new SimpleDateFormat("yyyyMMdd")
       output should be(s.format(friday.getTime()).toInt)
     }
+
+    it("should Tuesday's date if Wednesday before 1:00pm PST") {
+      val priceSync = PriceSync
+      val wednesday = Calendar.getInstance()
+      wednesday.set(2017, 4, 31, 9, 0)
+      // Wednesday May, 31 10:00am PST
+      val tuesday = Calendar.getInstance()
+      tuesday.set(2017, 4, 30)
+      // Tuesday May, 30
+      val output = priceSync.getExpectedMostRecentDate(wednesday)
+      val s = new SimpleDateFormat("yyyyMMdd")
+      output should be(s.format(tuesday.getTime()).toInt)
+    }
   }
 }
