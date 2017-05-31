@@ -1,47 +1,52 @@
-# Crystal Ball
-
-- database end point: dev.cfzlkjcjtww0.us-west-2.rds.amazonaws.com
-- psql --host=dev.cfzlkjcjtww0.us-west-2.rds.amazonaws.com --port=5432 --username=root --password --dbname=findw
-
 ## Purpose1: 
 
-Build a versatile application to both back test and forward test stock market strategies. The application should be able to take in algorithms based on set parameters (the strategy) and provide measurable results. The main output string together and compare the results.
+Build a versatile application to both back test and forward test stock market strategies. The application should be able to take in algorithms based on set parameters (the strategy) and provide measurable results. The main output should be able to compare different strategies.
 
-**Phase:** 1: Initial Creation
+**Phase:** 1: Data Layer and Test Strategy
 
 - Documentation of method and logic, and build shell
 - Initial build of data layer
-  - Create the tables and download the data
+  - Create tables 
+  - Download and parse data from Yahoo! Finance
+  - Create test cases
 - Build application to output results of one single strategy
+  - Strategy: Cross between two simple moving average
+  - Should be able to do this for any stock in the tables
+  - Do not build portfolio
 
-**Phase 2:** Refinement
+**Phase 2:** Portfolio & Strategy Integration (might split into two phases)
 
-- Determine outputs to compare measures
+- Build Portfolio
+  - See Portfolio Specifics below
 - Build object to compare multiple strategies
+  - Develop multiple strategies (EMA, Bollinger Bands) to test output of different/multiple strategies in portfolio
 - Ensure flexibility (closed to modification but open to extension)
-  - Strategy can be changed without affecting other components of application
-- Database refinement
+  - Strategy can be changed without affecting inner workings. Will only need to build strategy and input into the portfolio application, does not affect the data components or portofolia application. 
+- Database refinement if needed
 
-**Phase 3:** Analytics & Research – Part 1 Replication
+**Phase 3:** More Data & Replicating Models
 
-- Research into a few trading models
-- Obtain more data or and create calculated fields – based on above points
+- Decide if we want fundamental data at this point
+- Research into trading models and replicate
+- Obtain more data and create calculated fields – based on above points
   - Volatility measures
-  - Granular data
+  - More granular timepoints
+  - Fundamentals
   - Different markets (commodities, futures, currency)
   - Group stocks into industries, market cap, etc……
 - Implement Monte Carlo model for forward testing
 
-**Phase 4:** Analytics & Research – Part 2 Custom Models & Presentation
+**Phase 4:** Further Analytics & Research
 
-- Tool should be robust enough for us to implement various models
+- Build custom models
+  - Tool should be robust enough for us to implement various models
+
+**Phase 5: **Presentation Layer
+
 - Create presentation layer
+- MORE TO COME!
 
-## Phase 1 Specifics
-
-1. Documentation of method and logic
-
-**Main Goal: In words, describe how the application and data layer will be built with a focus on Phase 1 and Phase 2**
+## Portfolio Specifics
 
 **Application Layer**
 
@@ -65,13 +70,9 @@ Build a versatile application to both back test and forward test stock market st
   - Class Portfolio – stores results from CrystalBall
       - def executeTrate, getPosition, getPositions, getAvailableCash, getMarketValue
 
-To do: clarify all input and outputs
-
 **Data Layer**
 - AWS – database (Phase 1)
   - PostgreSQL for storage of raw data (archive and staging)
-  - Spark SQL for interface to application layer
-  - Abstracts away implementation of data as collection of scala collections
-- Custom scala updater using Slick for batch updates (Phase 2?)
-
-
+  - Slick library
+  - Actors
+- Implement Scalatest
