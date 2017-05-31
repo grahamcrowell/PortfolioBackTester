@@ -12,6 +12,8 @@ import scala.concurrent.Await
 import scala.concurrent.duration.Duration
 import scala.concurrent.ExecutionContext.Implicits.global
 import Common._
+import yahoofinance.YahooFinance
+import yahoofinance.histquotes.Interval
 
 
 abstract class UpdateTaskSpec
@@ -48,7 +50,6 @@ case object PriceSync {
     result.map {
       case (s, p) => UpdatePriceTaskSpec(s, p)
     }
-
   }
 
   def getExpectedMostRecentDate(now: Calendar = Calendar.getInstance()): Int = {
@@ -70,36 +71,17 @@ case object PriceSync {
       case _ => if (todayHourOfDay < 13) -1 else 0
     }
   }
-}
 
-import akka.actor.Actor
-import akka.actor.Props
-import akka.event.Logging
-import java.text.SimpleDateFormat
-import java.util.Calendar
-import yahoofinance.YahooFinance
-import yahoofinance.histquotes.Interval
-import scala.collection.JavaConverters._
-
-class PriceUpdateTask(task: UpdatePriceTaskSpec)  {
-
-  def downloadData(): Unit = {
-    def getData(symbol: String, fromDate: Calendar): Seq[Tuple8[String, Int, Double, Double, Double, Double, Int, Double]] = {
-      // TODO: function that checks if symbol exists in database
-      val stock = YahooFinance.get(symbol)
-
-      val interval = Interval.DAILY
-      val vector_HistoricalQuote = stock.getHistory(fromDate, interval).asScala
-      val sql_rows = for (historicalQuote <- vector_HistoricalQuote) yield {
-        val date_id = new SimpleDateFormat("yyyyMMdd").format(historicalQuote.getDate().getTime).toInt
-        (historicalQuote.getSymbol(), date_id, historicalQuote.getOpen().doubleValue, historicalQuote.getHigh().doubleValue, historicalQuote.getLow().doubleValue, historicalQuote.getClose().doubleValue, historicalQuote.getVolume().intValue, historicalQuote.getAdjClose().doubleValue)
-      }
-      return sql_rows
-    }
-
-
-  }
-
-
-
+//  def downloadData(task: UpdatePriceTaskSpec): Seq[Tuple8[String, Int, Double, Double, Double, Double, Int, Double]] = {
+//    // TODO: function that checks if symbol exists in database
+//    val stock = YahooFinance.get(task.symbol)
+//
+//    val interval = Interval.DAILY
+//    val vector_HistoricalQuote = stock.getHistory(fromDate, interval).asScala
+//    val sql_rows = for (historicalQuote <- vector_HistoricalQuote) yield {
+//      val date_id = new SimpleDateFormat("yyyyMMdd").format(historicalQuote.getDate().getTime).toInt
+//      (historicalQuote.getSymbol(), date_id, historicalQuote.getOpen().doubleValue, historicalQuote.getHigh().doubleValue, historicalQuote.getLow().doubleValue, historicalQuote.getClose().doubleValue, historicalQuote.getVolume().intValue, historicalQuote.getAdjClose().doubleValue)
+//    }
+//    return sql_rows
+//  }
 }
