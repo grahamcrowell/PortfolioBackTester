@@ -71,8 +71,11 @@ Build a versatile application to both back test and forward test stock market st
       - def executeTrate, getPosition, getPositions, getAvailableCash, getMarketValue
 
 **Data Layer**
-- AWS – database (Phase 1)
+- Tools (Phase 1)
   - PostgreSQL for storage of raw data (archive and staging)
   - Slick library
   - Actors
+- To do:
+  - Populate stock tables
+  - Application should be able to check most recent date of data and download data from that date
 - Implement Scalatest
