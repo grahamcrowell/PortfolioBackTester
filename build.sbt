@@ -11,10 +11,16 @@ libraryDependencies ++= Seq(
   "org.slf4j" % "slf4j-nop" % "1.6.4",
   "com.typesafe.slick" %% "slick-hikaricp" % "3.2.0"
 )
-libraryDependencies += "org.scalaj" %% "scalaj-http" % "2.3.0"
+
+//libraryDependencies += "org.scalaj" %% "scalaj-http" % "2.3.0"
+libraryDependencies ++= Seq(
+  "com.typesafe.akka" %% "akka-http" % "10.0.6",
+  "com.typesafe.akka" %% "akka-http-testkit" % "10.0.6" % Test
+)
 
 //see: http://financequotes-api.com/
-libraryDependencies += "com.yahoofinance-api" % "YahooFinanceAPI" % "3.6.1"
+//libraryDependencies += "com.yahoofinance-api" % "YahooFinanceAPI" % "3.6.1"
+
 
 libraryDependencies += "org.scalatest" %% "scalatest" % "3.0.1" % "test"
 

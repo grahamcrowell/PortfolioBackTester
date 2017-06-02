@@ -45,17 +45,17 @@ object Tests {
     println("see <database>.<schema>: findw.public")
   }
 
-  def UploadPriceData(symbol: String): Unit = {
-    println("connecting to local postgres using TypeSafe configuration file: application.conf")
-    val db = Database.forConfig("local")
-    try {
-      println(s"upload price data for $symbol")
-      val setupFuture = db.run(FinDwSchema.uploadData(symbol))
-    } finally db.close
-
-    println("tables created in postgreSql instance running locally")
-    println("see <database>.<schema>: findw.public")
-  }
+//  def UploadPriceData(symbol: String): Unit = {
+//    println("connecting to local postgres using TypeSafe configuration file: application.conf")
+//    val db = Database.forConfig("local")
+//    try {
+//      println(s"upload price data for $symbol")
+//      val setupFuture = db.run(FinDwSchema.uploadData(symbol))
+//    } finally db.close
+//
+//    println("tables created in postgreSql instance running locally")
+//    println("see <database>.<schema>: findw.public")
+//  }
 
 
   //  http://queirozf.com/entries/slick-3-reference-and-examples
@@ -236,7 +236,8 @@ object Main {
     val start = System.currentTimeMillis()
     println(s"current working directory: ${System.getProperty("user.dir")}")
 
-    test()
+//    test()
+    QuesTradeDataGet.foo()
 
     val end = System.currentTimeMillis()
     println(s"execution complete ${end - start} ms")

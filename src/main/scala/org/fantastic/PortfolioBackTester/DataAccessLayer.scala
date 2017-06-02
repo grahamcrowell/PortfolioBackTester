@@ -11,9 +11,10 @@ import slick.jdbc.PostgresProfile.api._
 import scala.concurrent.Await
 import scala.concurrent.duration.Duration
 import scala.concurrent.ExecutionContext.Implicits.global
+import scala.collection.JavaConverters._
 import Common._
-import yahoofinance.YahooFinance
-import yahoofinance.histquotes.Interval
+//import yahoofinance.YahooFinance
+//import yahoofinance.histquotes.Interval
 
 
 abstract class UpdateTaskSpec
@@ -72,11 +73,10 @@ case object PriceSync {
     }
   }
 
-//  def downloadData(task: UpdatePriceTaskSpec): Seq[Tuple8[String, Int, Double, Double, Double, Double, Int, Double]] = {
-//    // TODO: function that checks if symbol exists in database
+//  def downloadData(task: UpdatePriceTaskSpec): Seq[(String, Int, Double, Double, Double, Double, Int, Double)] = {
 //    val stock = YahooFinance.get(task.symbol)
-//
 //    val interval = Interval.DAILY
+//    val fromDate = task.fromDate.getOrElse(Common.epochDateId)
 //    val vector_HistoricalQuote = stock.getHistory(fromDate, interval).asScala
 //    val sql_rows = for (historicalQuote <- vector_HistoricalQuote) yield {
 //      val date_id = new SimpleDateFormat("yyyyMMdd").format(historicalQuote.getDate().getTime).toInt

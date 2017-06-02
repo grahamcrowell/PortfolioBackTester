@@ -10,6 +10,7 @@ import java.util.Calendar
 object Common {
 
   val dateIdFormat = new SimpleDateFormat("yyyyMMdd")
+  val epochDateId = 19000101
 
   implicit def toInt(x: Calendar): Int = {
     dateIdFormat.format(x.getTime()).toInt

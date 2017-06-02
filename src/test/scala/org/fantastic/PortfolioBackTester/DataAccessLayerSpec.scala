@@ -120,3 +120,12 @@ class DataAccessLayerSpecOutdated extends FunSpec with Matchers {
     }
   }
 }
+
+//class DataAccessLayerSpecDownload extends FunSpec with Matchers {
+//  describe("downloadData") {
+//    val updatePriceTaskSpec = UpdatePriceTaskSpec("MSFT", Some(20150101))
+//    val seqTuple = PriceSync.downloadData(updatePriceTaskSpec).filter((row) => row._2 < 20160000)
+//    println(seqTuple.length)
+//
+//  }
+//}
