@@ -13,7 +13,7 @@ import akka.util.ByteString
 class Myself extends Actor
   with ActorLogging {
 
-  import akka.pattern.pipe
+    import akka.pattern.pipe
   import context.dispatcher
 
   final implicit val materializer: ActorMaterializer = ActorMaterializer(ActorMaterializerSettings(context.system))

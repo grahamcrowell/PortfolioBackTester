@@ -1,6 +1,11 @@
 package org.fantastic.AkkaPoc
 
-import akka.actor.{Actor, ActorSystem, Props}
+import akka.actor.{Actor, ActorLogging, ActorSystem, Props}
+import akka.http.scaladsl.Http
+import akka.http.scaladsl.model._
+import akka.http.scaladsl.model.HttpRequest
+import akka.stream.{ActorMaterializer, ActorMaterializerSettings}
+import akka.util.ByteString
 
 import language.postfixOps
 import scala.concurrent.duration._
@@ -9,27 +14,43 @@ import scala.concurrent.duration._
   * Created by gcrowell on 2017-06-04.
   */
 // see http://doc.akka.io/docs/akka/current/scala/actors.html#value-classes-as-constructor-arguments
-class Argument(val symbol: String) extends AnyVal
+class HttpArgument(val symbol: String) extends AnyVal
 
 
-class ValueClassActor(val arg: Argument) extends Actor {
+class HttpRequestActor(val arg: Argument) extends Actor with ActorLogging {
+  import akka.pattern.pipe
+  import context.dispatcher
 
+  val httpRequest = HttpRequest(uri = "http://akka.io")
 
+  val http = Http(context.system)
+  final implicit val materializer: ActorMaterializer = ActorMaterializer(ActorMaterializerSettings(context.system))
+
+  override def preStart() = {
+    http.singleRequest(httpRequest).pipeTo(self)
+  }
 
   def receive = {
     case message: String => println(s"${arg.symbol} received the message: ${message}.")
+    case HttpResponse(StatusCodes.OK, headers, entity, _) =>
+      entity.dataBytes.runFold(ByteString(""))(_ ++ _).foreach { body =>
+        log.info("Got response, body: " + body.utf8String)
+      }
+    case resp@HttpResponse(code, _, _, _) =>
+      log.info("Request failed, response code: " + code)
+      resp.discardEntityBytes()
     case _ => println(s"${arg.symbol} received a message.")
   }
 }
 
-object ValueClassActor {
+object HttpRequestActor {
   //  def props1(arg: Argument) = Props(classOf[ValueClassActor], arg) // fails at runtime
   //  def props2(arg: Argument) = Props(classOf[ValueClassActor], arg.symbol) // ok
   def props3(arg: Argument): Props = Props(new HttpRequestActor(arg)) // ok
 }
 
 
-object ActorSystemRoot extends App {
+object HttpActorSystemRoot extends App {
   // application entry point
   override def main(args: Array[String]): Unit = {
     // create a new actor system
