@@ -25,7 +25,7 @@ class ValueClassActor(val arg: Argument) extends Actor {
 object ValueClassActor {
   //  def props1(arg: Argument) = Props(classOf[ValueClassActor], arg) // fails at runtime
   //  def props2(arg: Argument) = Props(classOf[ValueClassActor], arg.symbol) // ok
-  def props3(arg: Argument): Props = Props(new HttpRequestActor(arg)) // ok
+  def props3(arg: Argument): Props = Props(new ValueClassActor(arg)) // ok
 }
 
 
@@ -37,7 +37,7 @@ object ActorSystemRoot extends App {
     // create parameter for Actor
     val symbolArgument = new Argument("MSFT")
     // create Props configuration needed to safely start an actor
-    val props = HttpRequestActor.props3(symbolArgument)
+    val props = ValueClassActor.props3(symbolArgument)
     // create (and start) the actor
     val actorRef = actorSystem.actorOf(props, "an_actor_created_using_value_class")
 

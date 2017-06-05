@@ -17,7 +17,7 @@ import scala.concurrent.duration._
 class HttpArgument(val symbol: String) extends AnyVal
 
 
-class HttpRequestActor(val arg: Argument) extends Actor with ActorLogging {
+class HttpRequestActor(val arg: HttpArgument) extends Actor with ActorLogging {
   import akka.pattern.pipe
   import context.dispatcher
 
@@ -44,9 +44,9 @@ class HttpRequestActor(val arg: Argument) extends Actor with ActorLogging {
 }
 
 object HttpRequestActor {
-  //  def props1(arg: Argument) = Props(classOf[ValueClassActor], arg) // fails at runtime
-  //  def props2(arg: Argument) = Props(classOf[ValueClassActor], arg.symbol) // ok
-  def props3(arg: Argument): Props = Props(new HttpRequestActor(arg)) // ok
+  //  def props1(arg: HttpArgument) = Props(classOf[ValueClassActor], arg) // fails at runtime
+  //  def props2(arg: HttpArgument) = Props(classOf[ValueClassActor], arg.symbol) // ok
+  def props3(arg: HttpArgument): Props = Props(new HttpRequestActor(arg)) // ok
 }
 
 
@@ -56,7 +56,7 @@ object HttpActorSystemRoot extends App {
     // create a new actor system
     val actorSystem = ActorSystem("actor_system")
     // create parameter for Actor
-    val symbolArgument = new Argument("MSFT")
+    val symbolArgument = new HttpArgument("MSFT")
     // create Props configuration needed to safely start an actor
     val props = HttpRequestActor.props3(symbolArgument)
     // create (and start) the actor
