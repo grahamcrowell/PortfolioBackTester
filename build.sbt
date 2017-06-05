@@ -28,3 +28,5 @@ libraryDependencies ++= Seq(
   "com.typesafe.akka" %% "akka-actor" % "2.5.2",
   "com.typesafe.akka" %% "akka-testkit" % "2.5.2" % Test
 )
+
+mainClass in (Compile, run):=Some("package org.fantastic.AkkaPoc.HttpActorSystemRoot")
