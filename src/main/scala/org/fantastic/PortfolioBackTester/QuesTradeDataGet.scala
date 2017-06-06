@@ -37,7 +37,7 @@ object QuesTradeDataGet {
     // construct a simple GET request to `homeUri`
     val uri = Uri("https://api01.iq.questrade.com/v1/symbols/search?prefix=BMO")
     val host = Host("api01.iq.questrade.com")
-    val token = "get from questrade account"
+    val token = "Txh8KvxugQBcS69HQwA4rL6UewlBUg"
     val auth = headers.Authorization(OAuth2BearerToken(token))
     val request = HttpRequest(GET, uri = uri, headers = List(auth))
 //    val responce = Http().singleRequest(request)

@@ -15,7 +15,7 @@ libraryDependencies ++= Seq(
 //libraryDependencies += "org.scalaj" %% "scalaj-http" % "2.3.0"
 libraryDependencies ++= Seq(
   "com.typesafe.akka" %% "akka-http" % "10.0.6",
-  "com.typesafe.akka" %% "akka-http-testkit" % "10.0.6" % Test
+  "com.typesafe.akka" %% "akka-actor" % "2.5.2"
 )
 
 //see: http://financequotes-api.com/
@@ -23,9 +23,3 @@ libraryDependencies ++= Seq(
 
 
 libraryDependencies += "org.scalatest" %% "scalatest" % "3.0.1" % "test"
-
-libraryDependencies ++= Seq(
-  "com.typesafe.akka" %% "akka-actor" % "2.5.2",
-  "com.typesafe.akka" %% "akka-testkit" % "2.5.2" % Test
-)
-
