@@ -1,10 +1,22 @@
-package org.fantastic.PortfolioBackTester
+package org.fantastic.DataModel
 
 import slick.jdbc.PostgresProfile.api._
 
 /**
   * Created by gcrowell on 2017-05-24.
   */
+//http://slick.lightbend.com/doc/3.2.0/schemas.html#mapped-tables
+//case class StockOHLCRecord(symbol: String,
+//                           dateId: Int,
+//                           open: Double,
+//                           high: Double,
+//                           low: Double,
+//                           close: Double,
+//                           volume: Long,
+//                           adjusted_close: Double
+//                          )
+
+
 // Definition of the stock table (always use lowercase and _)
 class Stock(tag: Tag) extends Table[(String, String, Option[String], Option[String], Option[Int])](tag, Some("dim"), "stock") {
   // Every table needs a * projection with the same type as the table's type parameter
@@ -42,10 +54,19 @@ class StockOHLC(tag: Tag) extends Table[(String, Int, Double, Double, Double, Do
 
   def adjusted_close = column[Double]("adjusted_close")
 
-  def pk = primaryKey("pk_stockohlc", (stock_symbol, date_id))
-
   def stock_symbol = column[String]("stock_symbol")
 
   def date_id = column[Int]("date_id")
+
+  def pk = primaryKey("pk_stockohlc", (stock_symbol, date_id))
+
+}
+
+object Schema {
+  val stock = TableQuery[Stock]
+  val stockohlc = TableQuery[StockOHLC]
+  // TODO: fix so both tables can be created at same time
+  // create table(s)
+  val setup = DBIO.seq((stock.schema ++ stockohlc.schema).create)
 
 }
