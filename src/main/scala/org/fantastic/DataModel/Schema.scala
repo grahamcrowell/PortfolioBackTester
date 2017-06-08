@@ -1,20 +1,23 @@
 package org.fantastic.DataModel
 
+import org.fantastic.util.Asset
 import slick.jdbc.PostgresProfile.api._
 
 /**
   * Created by gcrowell on 2017-05-24.
   */
 //http://slick.lightbend.com/doc/3.2.0/schemas.html#mapped-tables
-//case class StockOHLCRecord(symbol: String,
-//                           dateId: Int,
-//                           open: Double,
-//                           high: Double,
-//                           low: Double,
-//                           close: Double,
-//                           volume: Long,
-//                           adjusted_close: Double
-//                          )
+case class StockOHLCRecord(symbol: String,
+                           dateId: Int,
+                           open: Double,
+                           high: Double,
+                           low: Double,
+                           close: Double,
+                           volume: Long,
+                           adjusted_close: Double
+                          ) extends Asset {
+  override def ticker: String = symbol
+}
 
 
 // Definition of the stock table (always use lowercase and _)
@@ -36,8 +39,8 @@ class Stock(tag: Tag) extends Table[(String, String, Option[String], Option[Stri
 }
 
 // Definition of the stock_ohlc table
-class StockOHLC(tag: Tag) extends Table[(String, Int, Double, Double, Double, Double, Int, Double)](tag, Some("fact"), "stock_ohlc") {
-  def * = (stock_symbol, date_id, open, high, low, close, volume, adjusted_close)
+class StockOHLC(tag: Tag) extends Table[StockOHLCRecord](tag, Some("fact"), "stock_ohlc") {
+  def * = (stock_symbol, date_id, open, high, low, close, volume, adjusted_close) <> (StockOHLCRecord.tupled, StockOHLCRecord.unapply)
 
   def open = column[Double]("open")
 
@@ -50,15 +53,15 @@ class StockOHLC(tag: Tag) extends Table[(String, Int, Double, Double, Double, Do
 
   def close = column[Double]("close")
 
-  def volume = column[Int]("volume")
+  def volume = column[Long]("volume")
 
   def adjusted_close = column[Double]("adjusted_close")
+
+  def pk = primaryKey("pk_stockohlc", (stock_symbol, date_id))
 
   def stock_symbol = column[String]("stock_symbol")
 
   def date_id = column[Int]("date_id")
-
-  def pk = primaryKey("pk_stockohlc", (stock_symbol, date_id))
 
 }
 
