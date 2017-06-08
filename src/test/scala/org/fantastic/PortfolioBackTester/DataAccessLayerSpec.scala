@@ -11,9 +11,8 @@ import org.scalatest.{FunSpec, Matchers}
   */
 class DataAccessLayerSpec extends FunSpec with Matchers {
   describe("getOffsetDayCount") {
-    it("should offset  with friday") {
+    it("should offset with friday") {
       val priceSync = PriceSync
-      //
       val friday = Calendar.getInstance() //sets sunday as Calendar type
       friday.set(2017, 4, 26)
       //sets sunday as actual date
@@ -21,9 +20,8 @@ class DataAccessLayerSpec extends FunSpec with Matchers {
       output should be(0)
     }
 
-    it("should offset satuday with friday") {
+    it("should offset saturday with friday") {
       val priceSync = PriceSync
-      //
       //val today = Calendar.SATURDAY //returns 7
       val saturday = Calendar.getInstance() //sets sunday as Calendar type
       saturday.set(2017, 4, 27)
@@ -37,7 +35,6 @@ class DataAccessLayerSpec extends FunSpec with Matchers {
 
     it("should offset sunday with friday") {
       val priceSync = PriceSync
-      //
       //val today = Calendar.SATURDAY //returns 7
       val sunday = Calendar.getInstance() //sets saturday as Calendar type
       sunday.set(2017, 4, 28)
@@ -51,7 +48,6 @@ class DataAccessLayerSpec extends FunSpec with Matchers {
 
     it("should offset Monday before 1:00pm PST with friday") {
       val priceSync = PriceSync
-      //
       //val today = Calendar.SATURDAY //returns 7
       val monday = Calendar.getInstance() //sets monday as Calendar type
       monday.set(2017, 4, 29, 12, 0)
@@ -65,7 +61,6 @@ class DataAccessLayerSpec extends FunSpec with Matchers {
 
     it("should not offset Monday after 1:00pm PST with friday") {
       val priceSync = PriceSync
-      //
       //val today = Calendar.SATURDAY //returns 7
       val monday = Calendar.getInstance() //sets monday as Calendar type
       monday.set(2017, 4, 29, 15, 0)
@@ -79,7 +74,6 @@ class DataAccessLayerSpec extends FunSpec with Matchers {
 
     it("should Friday's date if Monday after 1:00pm PST") {
       val priceSync = PriceSync
-      //
       val monday = Calendar.getInstance() //sets monday as Calendar type
       monday.set(2017, 4, 29, 12, 0)
       //sets monday as actual datetime
@@ -87,7 +81,6 @@ class DataAccessLayerSpec extends FunSpec with Matchers {
       friday.set(2017, 4, 26)
       //sets friday as actual date
       val output = priceSync.getExpectedMostRecentDate(monday)
-      //
       val s = new SimpleDateFormat("yyyyMMdd")
       output should be(s.format(friday.getTime()).toInt)
     }

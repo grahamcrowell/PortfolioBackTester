@@ -15,8 +15,11 @@ import scala.concurrent.duration._
 class ActorRoot extends Actor {
   val log = Logging(context.system, this)
 
+  //FO EHERW
+
   def receive = {
     case "test" => log.info("received test")
+    case "tesSDCt" => log.info("received test")
     case _      => log.info("received unknown message")
   }
 }
@@ -36,6 +39,9 @@ object PocMain extends App {
     actorSystem.scheduler.scheduleOnce(500 millis) {
       // send message to actor in the system
       actorRoot ! "test"
+      actorRoot ! "JLKADJF"
+      actorRoot ! "test"
     }
+//    actorSystem.terminate()
   }
 }
