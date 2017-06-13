@@ -14,8 +14,6 @@ class Argument(val symbol: String) extends AnyVal
 
 class ValueClassActor(val arg: Argument) extends Actor {
 
-
-
   def receive = {
     case message: String => println(s"${arg.symbol} received the message: ${message}.")
     case _ => println(s"${arg.symbol} received a message.")

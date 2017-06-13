@@ -14,6 +14,8 @@ import scala.concurrent._
 import scala.concurrent.duration.Duration
 import java.util.Calendar
 
+import org.fantastic.DataModel.{Stock, StockOHLC}
+
 
 object Tests {
 
